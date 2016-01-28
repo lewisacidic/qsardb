@@ -61,3 +61,5 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
+#Mac Finder cache
+.DS_Store
