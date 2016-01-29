@@ -7,6 +7,8 @@ from sqlalchemy_utils import database_exists, create_database
 
 from tqdm import tqdm
 
+import skchem
+
 from ...models import Session, Source, Species, Target, Compound, Activity
 
 
@@ -44,7 +46,7 @@ class ChemblLoader(object):
     def description(self):
         return "Chembl {version} database, "
         "ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb"
-        "/releases/chembl_{version}").format(version=self.chembl_version)
+        "/releases/chembl_{version}".format(version=self.chembl_version)
 
     @property
     def data_dir(self):
@@ -126,6 +128,17 @@ class ChemblLoader(object):
                               compound_id=lookup_compound[mol_chembl_id],
                               source=source))
 
+    def remove_unparseable(self, session):
+        for c in session.query(Compound).all():
+            deleted = []
+            try:
+                skchem.Mol.from_smiles(c.smiles)
+            except ValueError:
+                deleted.append(c.id)
+                session.delete(c)
+        for a in session.query(Activity).join(Compound).filter(Compound.id.in_(deleted)).all():
+            session.delete(a)
+
     def load_all(self, session):
         LOGGER.info('Loading all data...')
         self.load_source(session)
@@ -133,6 +146,7 @@ class ChemblLoader(object):
         self.load_targets(session)
         self.load_compounds(session)
         self.load_activities(session)
+        self.remove_unparseable(session)
 
 if __name__ == '__main__':
 
