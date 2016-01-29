@@ -6,7 +6,12 @@ Package for handling QSAR data.
 Setting up the database
 -----------------------
 
-Create a postgresql database called `qsardb`:
+A dump of the database is available from GitHub Large File Storage.  To get it,
+install `git-lfs` from [packagecloud.io](https://packagecloud.io/install/repositories/github/git-lfs/).
+
+
+Create a postgresql database called `qsardb` (this will require being run as a
+superuser.  By default, the postgres user):
 
 ```bash
 createuser qsar
@@ -22,15 +27,15 @@ alembic upgrade head
 Load chembl data
 ----------------
 
-Set up a chembl database.  Then grant select for qsar:
+Set up a [ChEMBL postresql database](ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/).  
+Then grant SELECT privileges for the qsar user:
 
 ```bash
-psql chembl_{version} -c'GRANT SELECT ON ALL TABLES IN SCHEMA public TO qsar;
+psql chembl_{version} -c'GRANT SELECT ON ALL TABLES IN SCHEMA public TO qsar;'
 ```
 
-Finally, use the chembl loader script.
+Finally, use the ChEMBL loader script:
 
 ```bash
-python -m qsardb.data.chembl.__init__
+python -m qsardb.data.chembl
 ```
-

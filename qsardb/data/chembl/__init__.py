@@ -1,4 +1,4 @@
-import logging, sys, os, textwrap
+import logging, sys, os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
@@ -7,7 +7,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 from tqdm import tqdm
 
-import skchem
+# import skchem
 
 from ...models import Session, Source, Species, Target, Compound, Activity
 
@@ -127,17 +127,17 @@ class ChemblLoader(object):
                               target_id=lookup_target[uniprot_accession],
                               compound_id=lookup_compound[mol_chembl_id],
                               source=source))
-
-    def remove_unparseable(self, session):
-        for c in session.query(Compound).all():
-            deleted = []
-            try:
-                skchem.Mol.from_smiles(c.smiles)
-            except ValueError:
-                deleted.append(c.id)
-                session.delete(c)
-        for a in session.query(Activity).join(Compound).filter(Compound.id.in_(deleted)).all():
-            session.delete(a)
+    #
+    # def remove_unparseable(self, session):
+    #     for c in session.query(Compound).all():
+    #         deleted = []
+    #         try:
+    #             skchem.Mol.from_smiles(c.smiles)
+    #         except ValueError:
+    #             deleted.append(c.id)
+    #             session.delete(c)
+    #     for a in session.query(Activity).join(Compound).filter(Compound.id.in_(deleted)).all():
+    #         session.delete(a)
 
     def load_all(self, session):
         LOGGER.info('Loading all data...')
@@ -146,7 +146,7 @@ class ChemblLoader(object):
         self.load_targets(session)
         self.load_compounds(session)
         self.load_activities(session)
-        self.remove_unparseable(session)
+        # self.remove_unparseable(session)
 
 if __name__ == '__main__':
 
