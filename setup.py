@@ -10,12 +10,24 @@ KEYWORDS = 'cheminformatics, qsar, database'
 URL = 'http://github.com/richlewis42/qsardb'
 PACKAGES = find_packages(exclude=['tests'])
 PACKAGE_DATA = {
-    '': ['requirements.txt', 'LICENSE'],
+    '': ['requirements.txt', 'requirements_test.txt', 'LICENSE'],
     'qsar.data.chembl': ['queries/*.sql']
 }
 
 with open('README.md') as f:
     LONG_DESCRIPTION = f.read()
+
+REQUIREMENTS = [
+    'tqdm',
+    'scikit-chem',
+    'pandas',
+    'sqlalchemy',
+    'sqlalchemy_utils'
+]
+
+REQUIREMENTS_TEST = [
+    'pytest'
+]
 
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
@@ -34,6 +46,8 @@ if __name__ == '__main__':
         url=URL,
         packages=PACKAGES,
         long_description=LONG_DESCRIPTION,
+	install_requires=REQUIREMENTS,
+	tests_require=REQUIREMENTS_TEST,
         classifiers=CLASSIFIERS,
         package_data=PACKAGE_DATA,
         include_package_data=True
