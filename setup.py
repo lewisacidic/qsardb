@@ -22,7 +22,8 @@ REQUIREMENTS = [
     'scikit-chem',
     'pandas',
     'sqlalchemy',
-    'sqlalchemy_utils'
+    'sqlalchemy_utils',
+    'alembic'
 ]
 
 REQUIREMENTS_TEST = [
